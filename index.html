@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Navya Sipani — Game Designer & Unity Developer</title>
+  <meta name="description" content="Portfolio of Navya Sipani — game designer and Unity/C# developer. Shipped Celestial Syndicate on Google Play. Currently designing Cipher Stones. 66+ weeks of public design documentation." />
+  <meta property="og:title" content="Navya Sipani — Game Designer & Unity Developer" />
+  <meta property="og:description" content="Game designer who works on paper first. Shipped on Google Play. Currently designing Cipher Stones." />
+  <meta property="og:image" content="https://img.itch.zone/aW1nLzI3ODA1NDM3LnBuZw==/original/Wy%2Fip3.png" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Navya Sipani — Game Designer" />
+  <meta name="twitter:image" content="https://img.itch.zone/aW1nLzI3ODA1NDM3LnBuZw==/original/Wy%2Fip3.png" />
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+    ============================================================ */
+    :root {
+      --bg:        #0d0f14;
+      --bg2:       #13161d;
+      --bg3:       #1a1e27;
+      --surface:   #1e2330;
+      --border:    #2a2f3d;
+      --accent:    #00d4aa;
+      --accent2:   #00b090;
+      --accent-dim:#00d4aa22;
+      --text:      #e8eaf0;
+      --text2:     #9aa0b4;
+      --text3:     #5a6075;
+      --display:   'Space Grotesk', sans-serif;
+      --mono:      'Space Mono', monospace;
+      --radius:    8px;
+      --radius-lg: 16px;
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--display);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    ::selection {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.5; }
+    }
+    @keyframes scanline {
+      0%   { transform: translateY(-100%); }
+      100% { transform: translateY(100vh); }
+    }
+    @keyframes borderGlow {
+      0%, 100% { box-shadow: 0 0 8px var(--accent-dim); }
+      50%       { box-shadow: 0 0 24px rgba(0,212,170,0.2); }
+    }
+    @keyframes gridFloat {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-8px); }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 0 40px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(13,15,20,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--transition);
+    }
+    nav.scrolled {
+      border-bottom-color: var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+    .nav-logo span {
+      color: var(--text2);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text2);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color var(--transition);
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    .nav-cta {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 6px 16px;
+      border-radius: var(--radius);
+      transition: background var(--transition), color var(--transition);
+    }
+    .nav-cta:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all var(--transition);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px;
+      z-index: 99;
+    }
+    .mobile-menu.open { display: flex; flex-direction: column; gap: 16px; }
+    .mobile-menu a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text2);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      transition: color var(--transition);
+    }
+    .mobile-menu a:hover { color: var(--accent); }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 120px 40px 80px;
+    }
+
+    .hero-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,170,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,170,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+    .hero-grid-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, transparent 40%, var(--bg) 100%);
+    }
+
+    .hero-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.2s forwards;
+    }
+    .hero-eyebrow::before {
+      content: '> ';
+      color: var(--text3);
+    }
+
+    h1.hero-name {
+      font-family: var(--display);
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.35s forwards;
+    }
+    h1.hero-name span {
+      color: var(--accent);
+    }
+
+    .hero-title {
+      font-size: clamp(0.85rem, 2vw, 1.05rem);
+      color: var(--text2);
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.5s forwards;
+    }
+    .hero-title strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--text);
+      font-weight: 400;
+      max-width: 660px;
+      line-height: 1.55;
+      margin-bottom: 40px;
+      border-left: 2px solid var(--accent);
+      padding-left: 20px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.65s forwards;
+    }
+
+    .hero-meta {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text3);
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.75s forwards;
+    }
+    .hero-meta a {
+      color: var(--text2);
+      transition: color var(--transition);
+    }
+    .hero-meta a:hover { color: var(--accent); }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.85s forwards;
+      margin-bottom: 56px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      letter-spacing: 0.05em;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,212,170,0.3);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      letter-spacing: 0.05em;
+      transition: border-color var(--transition), color var(--transition), transform var(--transition);
+    }
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.95s forwards;
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+    }
+    .stat-num {
+      font-family: var(--mono);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 4px;
+    }
+
+    /* ============================================================
+       SECTION SHARED
+    ============================================================ */
+    section {
+      padding: 80px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h2.section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 48px;
+    }
+
+    hr.section-rule {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 80px auto;
+      max-width: 1100px;
+      padding: 0 40px;
+    }
+
+    /* ============================================================
+       ABOUT
+    ============================================================ */
+    #about .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .about-text p {
+      font-size: 1rem;
+      color: var(--text2);
+      line-height: 1.75;
+      margin-bottom: 20px;
+    }
+    .about-text p strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .about-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .skills-block h3 {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 14px;
+      font-family: var(--mono);
+    }
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .skill-tag {
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      background: var(--surface);
+      transition: border-color var(--transition), color var(--transition);
+    }
+    .skill-tag:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .education-block h3 {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 14px;
+      font-family: var(--mono);
+    }
+    .edu-item {
+      margin-bottom: 20px;
+      padding-left: 14px;
+      border-left: 2px solid var(--border);
+    }
+    .edu-item:last-child { margin-bottom: 0; }
+    .edu-degree {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .edu-uni {
+      font-size: 0.78rem;
+      color: var(--text2);
+      margin-top: 2px;
+    }
+    .edu-year {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      margin-top: 4px;
+    }
+
+    /* ============================================================
+       FEATURED PROJECT — CIPHER STONES
+    ============================================================ */
+    #cipher-stones {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 40px;
+    }
+    #cipher-stones > * {
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cipher-inner {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .cipher-badge-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .badge {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .badge-featured {
+      background: var(--accent);
+      color: var(--bg);
+    }
+    .badge-wip {
+      border: 1px solid rgba(0,212,170,0.4);
+      color: var(--accent);
+    }
+
+    .cipher-title {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      line-height: 1.0;
+      margin-bottom: 8px;
+    }
+    .cipher-subtitle {
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-family: var(--mono);
+      margin-bottom: 24px;
+    }
+
+    .cipher-desc {
+      font-size: 0.95rem;
+      color: var(--text2);
+      line-height: 1.75;
+      margin-bottom: 28px;
+    }
+    .cipher-desc strong { color: var(--text); }
+
+    .cipher-specs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .spec-label {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--text3);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .spec-value {
+      font-size: 0.82rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .cipher-gdd-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-weight: 600;
+      border-bottom: 1px solid rgba(0,212,170,0.3);
+      padding-bottom: 2px;
+      transition: border-color var(--transition);
+    }
+    .cipher-gdd-link:hover { border-color: var(--accent); }
+
+    /* Cipher Stones visual placeholder */
+    .cipher-visual {
+      position: relative;
+      aspect-ratio: 3/4;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      animation: borderGlow 3s ease infinite;
+    }
+
+    .cipher-grid-canvas {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .puzzle-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
+      padding: 24px;
+      animation: gridFloat 4s ease infinite;
+    }
+    .puzzle-cell {
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text3);
+      transition: all var(--transition);
+    }
+    .puzzle-cell.active {
+      background: rgba(0,212,170,0.15);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .puzzle-cell.path {
+      background: rgba(0,212,170,0.06);
+      border-color: rgba(0,212,170,0.3);
+      color: rgba(0,212,170,0.5);
+    }
+
+    .cipher-coming-soon {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text3);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .cipher-coming-soon span {
+      color: var(--accent);
+      animation: blink 1.2s ease infinite;
+    }
+
+    /* ============================================================
+       CELESTIAL SYNDICATE
+    ============================================================ */
+    .cs-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .cs-info {
+      padding: 48px;
+    }
+    .cs-badge-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .badge-published {
+      background: rgba(0,212,170,0.12);
+      color: var(--accent);
+      border: 1px solid rgba(0,212,170,0.3);
+    }
+    .badge-studio {
+      background: var(--surface);
+      color: var(--text2);
+      border: 1px solid var(--border);
+    }
+
+    .cs-title {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 8px;
+      line-height: 1.1;
+    }
+    .cs-role {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .cs-desc {
+      font-size: 0.9rem;
+      color: var(--text2);
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+    .cs-desc strong { color: var(--text); }
+
+    .cs-play-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .cs-play-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,212,170,0.3);
+    }
+
+    .cs-screenshots {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 2px;
+      background: var(--bg);
+      min-height: 300px;
+    }
+    .cs-screenshot {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ============================================================
+       PROJECT CARDS GRID
+    ============================================================ */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,212,170,0.4);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+
+    .card-thumb {
+      width: 100%;
+      aspect-ratio: 16/10;
+      object-fit: cover;
+      background: var(--surface);
+      display: block;
+    }
+    .card-thumb-placeholder {
+      width: 100%;
+      aspect-ratio: 16/10;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text3);
+      font-size: 2rem;
+    }
+
+    .card-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-tag-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .card-tag {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .tag-jam    { background: rgba(255,180,0,0.12); color: #ffb400; border: 1px solid rgba(255,180,0,0.3); }
+    .tag-solo   { background: rgba(0,212,170,0.1);  color: var(--accent); border: 1px solid rgba(0,212,170,0.3); }
+    .tag-android{ background: rgba(100,180,255,0.1); color: #64b4ff; border: 1px solid rgba(100,180,255,0.3); }
+    .tag-unity  { background: var(--surface); color: var(--text3); border: 1px solid var(--border); }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+    .card-short {
+      font-size: 0.78rem;
+      color: var(--text2);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .card-footer {
+      padding: 12px 20px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-platform {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--text3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .card-arrow {
+      font-size: 0.75rem;
+      color: var(--text3);
+      transition: color var(--transition), transform var(--transition);
+    }
+    .project-card:hover .card-arrow {
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    /* ============================================================
+       PROJECT DETAIL MODAL
+    ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 680px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: scale(0.95) translateY(16px);
+      transition: transform 0.25s ease;
+    }
+    .modal-overlay.open .modal-box {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      position: relative;
+      aspect-ratio: 16/9;
+      background: var(--surface);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      overflow: hidden;
+    }
+    .modal-header img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .modal-header-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: var(--text);
+      transition: background var(--transition);
+      z-index: 10;
+    }
+    .modal-close:hover { background: var(--surface); }
+
+    .modal-body {
+      padding: 36px;
+    }
+    .modal-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .modal-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .modal-meta {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text3);
+      margin-bottom: 28px;
+    }
+    .modal-desc {
+      font-size: 0.9rem;
+      color: var(--text2);
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+    .modal-desc h4 {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text3);
+      font-family: var(--mono);
+      margin-bottom: 8px;
+      margin-top: 24px;
+    }
+    .modal-desc p { margin-bottom: 12px; }
+    .modal-desc strong { color: var(--text); }
+
+    .modal-play-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .modal-play-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,212,170,0.3);
+    }
+
+    /* ============================================================
+       JOURNEY / TIMELINE
+    ============================================================ */
+    #journey {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 40px;
+    }
+    #journey > * {
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 28px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--border) 10%, var(--accent) 50%, var(--border) 90%, transparent);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+      padding-left: 24px;
+    }
+    .timeline-item:last-child { margin-bottom: 0; }
+
+    .timeline-dot {
+      position: absolute;
+      left: -34px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      transition: border-color var(--transition);
+    }
+    .timeline-item:hover .timeline-dot {
+      border-color: var(--accent);
+    }
+    .timeline-item.highlight .timeline-dot {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px rgba(0,212,170,0.4);
+    }
+
+    .timeline-date {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .timeline-event {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .timeline-detail {
+      font-size: 0.82rem;
+      color: var(--text2);
+      line-height: 1.55;
+    }
+
+    /* ============================================================
+       CONTACT / FOOTER
+    ============================================================ */
+    #contact {
+      padding: 80px 40px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      margin-bottom: 64px;
+    }
+
+    .contact-left h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+    .contact-left h2 span { color: var(--accent); }
+    .contact-left p {
+      font-size: 0.95rem;
+      color: var(--text2);
+      line-height: 1.65;
+      margin-bottom: 32px;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text2);
+      font-size: 0.88rem;
+      transition: color var(--transition);
+    }
+    .contact-link:hover { color: var(--accent); }
+    .contact-link svg {
+      flex-shrink: 0;
+      color: var(--text3);
+      transition: color var(--transition);
+    }
+    .contact-link:hover svg { color: var(--accent); }
+
+    .contact-right {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .social-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: border-color var(--transition), transform var(--transition);
+    }
+    .social-card:hover {
+      border-color: rgba(0,212,170,0.4);
+      transform: translateX(4px);
+    }
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--accent);
+    }
+    .social-label {
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.88rem;
+    }
+    .social-handle {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+    .social-arrow {
+      margin-left: auto;
+      color: var(--text3);
+      font-size: 0.8rem;
+      transition: color var(--transition), transform var(--transition);
+    }
+    .social-card:hover .social-arrow {
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: gap;
+    }
+    .footer-name {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--text3);
+    }
+    .footer-name span { color: var(--accent); }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--text3);
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+
+      #hero { padding: 100px 24px 60px; }
+      section { padding: 60px 24px; }
+      #cipher-stones { padding: 60px 24px; }
+      #journey { padding: 60px 24px; }
+      #contact { padding: 60px 24px 32px; }
+      footer { padding: 24px; }
+
+      #about .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .cipher-inner { grid-template-columns: 1fr; gap: 40px; }
+      .cipher-visual { aspect-ratio: 4/3; max-width: 400px; }
+      .cs-card { grid-template-columns: 1fr; }
+      .cs-screenshots { grid-template-rows: none; grid-template-columns: 1fr 1fr; min-height: 200px; }
+      .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+
+      hr.section-rule { padding: 0 24px; margin: 60px auto; }
+    }
+
+    @media (max-width: 600px) {
+      .hero-stats { gap: 24px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .cs-screenshots { grid-template-columns: 1fr; }
+      .puzzle-cell { width: 26px; height: 26px; font-size: 0.6rem; }
+      footer { flex-direction: column; gap: 8px; text-align: center; }
+      .cipher-specs { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <nav id="navbar">
+    <div class="nav-logo">NS<span></span></div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#featured">Projects</a></li>
+      <li><a href="#journey">Journey</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="https://canva.link/yob2x6iej8l1h55" target="_blank" rel="noopener" class="nav-cta">View Resume ↗</a>
+    <div class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about" onclick="closeMobileMenu()">About</a>
+    <a href="#featured" onclick="closeMobileMenu()">Projects</a>
+    <a href="#journey" onclick="closeMobileMenu()">Journey</a>
+    <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+    <a href="https://canva.link/yob2x6iej8l1h55" target="_blank" rel="noopener">View Resume ↗</a>
+  </div>
+
+  <!-- ============================================================
+       HERO
+  ============================================================ -->
+  <section id="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Game Designer & Unity Developer</p>
+      <h1 class="hero-name">Navya<br /><span>Sipani</span></h1>
+      <p class="hero-title">
+        <strong>Game Designer</strong> — Systems, Mechanics & Player Experience&nbsp;&nbsp;·&nbsp;&nbsp;
+        <strong>Unity & C#</strong>
+      </p>
+      <p class="hero-tagline">
+        I design games before I build them — working through core loops, mechanics, and player motivation on paper before a single line of code gets written.
+      </p>
+      <p class="hero-meta">
+        📍 Bikaner, Rajasthan, India &nbsp;·&nbsp;
+        <a href="mailto:sipaninavya17@gmail.com">sipaninavya17@gmail.com</a> &nbsp;·&nbsp;
+        <a href="tel:09435072918">09435072918</a>
+      </p>
+      <div class="hero-actions">
+        <a href="#featured" class="btn-primary">View My Work ↓</a>
+        <a href="https://canva.link/yob2x6iej8l1h55" target="_blank" rel="noopener" class="btn-ghost">Resume ↗</a>
+        <a href="https://sipaninavya.itch.io/" target="_blank" rel="noopener" class="btn-ghost">itch.io ↗</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">66+</span>
+          <span class="stat-label">Weeks documented</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">5+</span>
+          <span class="stat-label">Games shipped</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">1</span>
+          <span class="stat-label">Play Store title</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ABOUT
+  ============================================================ -->
+  <section id="about">
+    <p class="section-eyebrow reveal">About</p>
+    <h2 class="section-title reveal">Design-first.<br />Build second.</h2>
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <p>I design games before I build them — working through <strong>core loops, mechanics, and player motivation on paper</strong> before a single line of code gets written. Right now I'm deep in design on <strong>Cipher Stones</strong>, a grid-based puzzle adventure with three nested gameplay loops (micro, mid, meta) and a five-zone progression structure, where I've worked through everything from par-move systems to deliberately removing forced retention mechanics like daily streaks in favor of motivation that comes from the game itself.</p>
+        <p>I was a <strong>Game Developer Intern at Jabsz Gaming Studios</strong>, contributing to <strong>Celestial Syndicate</strong> — a space survival game (tower defense + base management) where players crash-land on the Moon and rebuild from nothing, now live on Google Play. Working across the project gave me a close-up view of how design decisions hold up once they hit real implementation and real players.</p>
+        <p>For over a year, I've publicly documented my growth as a developer — <strong>66+ consecutive weeks</strong> of Friday progress posts covering everything from prototyping mechanics to designing levels, enemy behavior, and game feel across multiple projects. That habit has taken me through two game jams, several short games built solo, and a growing instinct for what makes a mechanic worth building.</p>
+        <p>I'm pursuing my Bachelor's in Computer Applications from Maharaja Ganga Singh University and starting my Master's this year, while continuing to build independently.</p>
+      </div>
+      <div class="about-sidebar">
+        <div class="skills-block">
+          <h3>Top Skills</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Game Design</span>
+            <span class="skill-tag">Unity</span>
+            <span class="skill-tag">C#</span>
+            <span class="skill-tag">Level Design</span>
+            <span class="skill-tag">Game Mechanics</span>
+            <span class="skill-tag">Systems Design</span>
+            <span class="skill-tag">GDD Documentation</span>
+            <span class="skill-tag">Rapid Prototyping</span>
+            <span class="skill-tag">Playtesting</span>
+            <span class="skill-tag">Git / GitHub</span>
+            <span class="skill-tag">Audacity</span>
+            <span class="skill-tag">Communication</span>
+          </div>
+        </div>
+        <div class="education-block">
+          <h3>Education</h3>
+          <div class="edu-item">
+            <div class="edu-degree">Master of Science — Computer Science</div>
+            <div class="edu-uni">Maharaja Ganga Singh University, Bikaner</div>
+            <div class="edu-year">Jul 2025 – Jul 2027 · In Progress</div>
+          </div>
+          <div class="edu-item">
+            <div class="edu-degree">Bachelor of Computer Application</div>
+            <div class="edu-uni">Maharaja Ganga Singh University, Bikaner · Grade: 73%</div>
+            <div class="edu-year">Jul 2022 – Jun 2025</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ============================================================
+       FEATURED PROJECT — CIPHER STONES
+  ============================================================ -->
+  <div id="featured">
+  <section id="cipher-stones">
+    <div class="cipher-inner reveal">
+      <div>
+        <div class="cipher-badge-row">
+          <span class="badge badge-featured">Featured Project</span>
+          <span class="badge badge-wip">In Development</span>
+        </div>
+        <h2 class="cipher-title">Cipher<br />Stones</h2>
+        <p class="cipher-subtitle">// Top-down mobile grid puzzle · Unity 6.3 LTS</p>
+        <p class="cipher-desc">
+          A swipe-based mobile puzzle game built around <strong>three nested gameplay loops</strong> — micro (solving a grid puzzle), mid (completing a zone), and meta (uncovering a hidden five-letter word across all five zones). The loop structure is designed from the ground up to motivate through <strong>intrinsic satisfaction</strong>, deliberately cutting features like daily streaks and push notifications that trade long-term engagement for short-term retention.
+        </p>
+        <p class="cipher-desc">
+          Core systems include a <strong>par-move and undo system</strong> (full game-state history via a Stack), a <strong>3-star rating</strong> per level, ScriptableObject-based level data, and a Tilemap/Grid architecture. Zone layouts are being paper-playtested before any implementation begins — validating par-move counts and difficulty progression before a single line of Unity is written.
+        </p>
+        <div class="cipher-specs">
+          <div class="spec-item">
+            <span class="spec-label">Engine</span>
+            <span class="spec-value">Unity 6.3 LTS</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Platform</span>
+            <span class="spec-value">Mobile (Android)</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Zones</span>
+            <span class="spec-value">5 (25+ levels)</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Architecture</span>
+            <span class="spec-value">Tilemap / Grid · ScriptableObjects</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Undo System</span>
+            <span class="spec-value">Stack-based history</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Status</span>
+            <span class="spec-value">Design & paper prototyping</span>
+          </div>
+        </div>
+        <a href="https://docs.google.com/document/d/1fa9iKGpXTpeNbxcckrmZYpEooScnvxmlFwdLHrDlXcI/edit?usp=sharing" target="_blank" rel="noopener" class="cipher-gdd-link">
+          View Game Design Document ↗
+        </a>
+      </div>
+      <div class="cipher-visual">
+        <div class="cipher-grid-canvas">
+          <div class="puzzle-grid" id="puzzleGrid"></div>
+          <p class="cipher-coming-soon">CIPHER STONES <span>_</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <!-- ============================================================
+       CELESTIAL SYNDICATE
+  ============================================================ -->
+  <section id="celestial">
+    <p class="section-eyebrow reveal">Published Work</p>
+    <h2 class="section-title reveal">Celestial Syndicate</h2>
+    <div class="cs-card reveal">
+      <div class="cs-info">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <img
+            src="https://play-lh.googleusercontent.com/bdTRbZ_My01cYUPpGRbNoP1joa75gnCsz-KHJnmLSvajae8g85sh5OjoJjDZUGpYXdny2iuaSVKX0KZfzyH5Tmo=w240-h480"
+            alt="Celestial Syndicate icon"
+            style="width:56px;height:56px;border-radius:12px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);"
+            onerror="this.style.display='none'"
+          />
+          <div class="cs-badge-row" style="margin-bottom:0;">
+            <span class="badge badge-published">Live on Google Play</span>
+            <span class="badge badge-studio">Jabsz Gaming Studios</span>
+          </div>
+        </div>
+        <h3 class="cs-title">Space survival.<br />Built from nothing.</h3>
+        <p class="cs-role">// Main Programmer — alongside lead developer Mann Dahiya</p>
+        <p class="cs-desc">
+          A space survival game blending <strong>tower defense and base management</strong>. You crash-land on the Moon as the sole survivor of your crew and rebuild from scratch — gathering resources, expanding your base, manufacturing robots, defending against escalating threats, and eventually facing a <strong>story choice that shapes the ending</strong>.
+        </p>
+        <p class="cs-desc">
+          I served as main programmer across core gameplay systems: resource gathering, base building, robot manufacturing, and threat defense. Built cutscenes with Timeline, Cinemachine, and virtual cameras. Implemented a branching quest system where narrative decisions carry real consequences on story outcomes. Remote collaboration via Git/GitHub and Discord across the full development cycle.
+        </p>
+        <a href="https://play.google.com/store/apps/details?id=com.JabszGamingStudios.CelestialSyndicate" target="_blank" rel="noopener" class="cs-play-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 22V2l18 10L3 22z"/></svg>
+          Play on Google Play
+        </a>
+      </div>
+      <div class="cs-screenshots">
+        <img
+          class="cs-screenshot"
+          src="https://play-lh.googleusercontent.com/bfNAHjCgNQP1Vcwf4C3hiftLR0I6946Qap_9H7gHO3tA1s4ahkLai4vENN4RjTyVq-oZDYCL8Vf_pasY5utpDtQ=w526-h296"
+          alt="Celestial Syndicate – gameplay screenshot"
+          loading="lazy"
+          onerror="this.style.display='none'"
+        />
+        <img
+          class="cs-screenshot"
+          src="https://play-lh.googleusercontent.com/UHuHCYNTGdeWbqRDZoAsJhYnGIm8n1J4EbQE4ZEYmMgq2CjeV0fxGBeZzRbC0cGgCSzthN7J2mVso3aJnxTn8A=w526-h296"
+          alt="Celestial Syndicate – base building screenshot"
+          loading="lazy"
+          onerror="this.style.display='none'"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       GAME JAM & PRACTICE PROJECTS
+  ============================================================ -->
+  <section id="projects">
+    <p class="section-eyebrow reveal">Game Jam &amp; Practice Projects</p>
+    <h2 class="section-title reveal">Every game taught me something.</h2>
+
+    <div class="projects-grid">
+
+      <!-- TRIANGLE -->
+      <div class="project-card reveal" onclick="openModal('triangle')">
+        <img class="card-thumb"
+          src="https://img.itch.zone/aW1nLzE3ODgwMDc1LnBuZw==/original/ST8Czt.png"
+          alt="TRIANGLE game thumbnail"
+          loading="lazy"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div class="card-thumb-placeholder" style="display:none;">🔺</div>
+        <div class="card-body">
+          <div class="card-tag-row">
+            <span class="card-tag tag-solo">Solo</span>
+            <span class="card-tag tag-unity">Unity</span>
+          </div>
+          <p class="card-title">TRIANGLE</p>
+          <p class="card-short">A 2D practice project built to learn tilemaps, sprite design, dialogue cutscenes, and particle effects.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-platform">Browser · itch.io</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- Galaxy Shooter -->
+      <div class="project-card reveal" onclick="openModal('galaxy')">
+        <img class="card-thumb"
+          src="https://img.itch.zone/aW1nLzE4MjI1Njc0LnBuZw==/original/0WHQSP.png"
+          alt="Galaxy Shooter thumbnail"
+          loading="lazy"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div class="card-thumb-placeholder" style="display:none;">🚀</div>
+        <div class="card-body">
+          <div class="card-tag-row">
+            <span class="card-tag tag-solo">Solo</span>
+            <span class="card-tag tag-unity">Unity</span>
+          </div>
+          <p class="card-title">Galaxy Shooter</p>
+          <p class="card-short">A top-down space shooter built while learning Unity fundamentals and intermediate C#.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-platform">Browser · itch.io</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- Pregnant Warrior -->
+      <div class="project-card reveal" onclick="openModal('pregnant')">
+        <img class="card-thumb"
+          src="https://img.itch.zone/aW1nLzE4Mjk3Nzc2LnBuZw==/original/AsHKKT.png"
+          alt="Pregnant Warrior thumbnail"
+          loading="lazy"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div class="card-thumb-placeholder" style="display:none;">🤰</div>
+        <div class="card-body">
+          <div class="card-tag-row">
+            <span class="card-tag tag-jam">Game Jam</span>
+            <span class="card-tag tag-unity">Unity</span>
+          </div>
+          <p class="card-title">Pregnant Warrior</p>
+          <p class="card-short">48-hour co-op action game for "The Stupid Jam 2024." Built something ridiculous. Placed 7th.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-platform">Browser · itch.io · 7th place</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- Ball Wants to Roll -->
+      <div class="project-card reveal" onclick="openModal('ball')">
+        <img class="card-thumb"
+          src="https://img.itch.zone/aW1nLzE4MTcxODA2LnBuZw==/original/E%2FOe9D.png"
+          alt="Ball Wants to Roll thumbnail"
+          loading="lazy"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div class="card-thumb-placeholder" style="display:none;">⚽</div>
+        <div class="card-body">
+          <div class="card-tag-row">
+            <span class="card-tag tag-jam">Game Jam</span>
+            <span class="card-tag tag-unity">Unity</span>
+          </div>
+          <p class="card-title">Ball Wants to Roll</p>
+          <p class="card-short">First-ever game jam entry. Built in 48 hours, missed the deadline by minutes. Still uploaded it.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-platform">Browser · itch.io · Jam Weekend #5</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- Housie Tambola -->
+      <div class="project-card reveal" onclick="openModal('housie')">
+        <img class="card-thumb"
+          src="https://img.itch.zone/aW1nLzI3ODA1NDM3LnBuZw==/original/Wy%2Fip3.png"
+          alt="Housie Tambola Number Caller thumbnail"
+          loading="lazy"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div class="card-thumb-placeholder" style="display:none;">🎱</div>
+        <div class="card-body">
+          <div class="card-tag-row">
+            <span class="card-tag tag-android">Android</span>
+            <span class="card-tag tag-unity">Unity</span>
+          </div>
+          <p class="card-title">Housie Tambola Number Caller</p>
+          <p class="card-short">A fully functional Android app for calling Tambola numbers, with random/manual modes and color-coded UI.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-platform">Android APK · itch.io</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       JOURNEY / TIMELINE
+  ============================================================ -->
+  <section id="journey">
+    <p class="section-eyebrow reveal">Journey</p>
+    <h2 class="section-title reveal">66+ weeks and counting.</h2>
+    <div class="timeline reveal">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">Aug 2023</div>
+        <div class="timeline-event">Started the Friday Progress Series</div>
+        <div class="timeline-detail">Committed to posting public progress updates every Friday — a habit that would run 66+ consecutive weeks, covering prototyping, level design, enemy AI, cutscenes, sprite design, and game feel.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">Jan – Feb 2024</div>
+        <div class="timeline-event">Galaxy Shooter — First Complete Unity Project</div>
+        <div class="timeline-detail">Built a 2D top-down shooter while working through the Udemy Unity course. Learned animation, sound design, post-processing, and intermediate C# patterns.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">Mar – May 2024</div>
+        <div class="timeline-event">3D Game Development — Cinemachine, Navmesh, Enemy AI</div>
+        <div class="timeline-detail">Completed "The Great Fleece" — a 3D stealth game in the Unity course. Learned virtual cameras, dolly tracks, navmesh agents, singleton design patterns, cutscene sequencing, and light effects.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">Aug 2024</div>
+        <div class="timeline-event">Udemy Certificate — The Ultimate Guide to Game Development with Unity (Official)</div>
+        <div class="timeline-detail">Completed the full intermediate Unity course taught by Jonathan Weinberger, GameDevHQ, and Thomas Kasler. Covered three complete games across 2D, 3D, and platformer genres.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">Sep 2024</div>
+        <div class="timeline-event">TRIANGLE — First Solo Original Game</div>
+        <div class="timeline-detail">Started building an original game from scratch using tilemaps, grid systems, sprite design, cutscenes with a dialogue system, particle effects, and multiple player and enemy types.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">Oct 2024</div>
+        <div class="timeline-event">First Game Jam Entry — Ball Wants to Roll</div>
+        <div class="timeline-detail">Joined Jam Weekend #5 ("make it roll") and built a 3D game in 48 hours solo. Missed the submission deadline by minutes — but uploaded it anyway and documented the lesson publicly: always build buffer time.</div>
+      </div>
+
+      <div class="timeline-item highlight">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">Oct 2024</div>
+        <div class="timeline-event">Pregnant Warrior — 7th Place, The Stupid Jam 2024 ✦</div>
+        <div class="timeline-detail">Successfully submitted a co-op action game to "The Stupid Jam." Theme: build something deliberately ridiculous. Result: 7th place out of 61+ submissions. First jam completion after the missed deadline lesson from the previous week.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">Nov 2024</div>
+        <div class="timeline-event">Game Theory — Coursera (Stanford University)</div>
+        <div class="timeline-detail">Started and progressed through the beginner Game Theory course offered by Stanford on Coursera — applied concepts like Nash equilibria and strategic decision trees to game design thinking.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">Nov 2024</div>
+        <div class="timeline-event">Game Design Fundamentals — Udemy</div>
+        <div class="timeline-detail">Began a dedicated game design course covering entity systems, player types, loop structures, and mechanic theory. Started shifting identity from "game developer" to "game designer who builds."</div>
+      </div>
+
+      <div class="timeline-item highlight">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">Jan 2025</div>
+        <div class="timeline-event">Internship — Game Developer at Jabsz Gaming Studios ✦</div>
+        <div class="timeline-detail">Joined Jabsz Gaming Studios LLP as Game Developer Intern. Took on the main programmer role for Celestial Syndicate alongside lead programmer Mann Dahiya.</div>
+      </div>
+
+      <div class="timeline-item highlight">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">2025</div>
+        <div class="timeline-event">Celestial Syndicate Ships on Google Play ✦</div>
+        <div class="timeline-detail">Celestial Syndicate — a space survival game blending tower defense and base management — published on Google Play. A shipped, real-world product built remotely as part of a two-programmer team.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">Jun 2025</div>
+        <div class="timeline-event">Housie Tambola Number Caller — Android APK</div>
+        <div class="timeline-detail">Designed and built a standalone Android utility app for calling Tambola/Housie numbers. Handled random and manual calling modes, shared state, history tracking, color-coded UI, and Android-specific save data issues.</div>
+      </div>
+
+      <div class="timeline-item highlight">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">Present</div>
+        <div class="timeline-event">Designing Cipher Stones ✦</div>
+        <div class="timeline-detail">Deep in design on a top-down swipe-based mobile puzzle game with three nested loops and a five-zone structure. Paper prototyping levels before any code is written. The GDD is live and evolving.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACT
+  ============================================================ -->
+  <section id="contact">
+    <div class="contact-grid reveal">
+      <div class="contact-left">
+        <h2>Let's<br /><span>connect.</span></h2>
+        <p>Always glad to connect with fellow developers, indie creators, or anyone building something from scratch. Whether it's about game design, a project collaboration, or just saying hi — reach out.</p>
+        <div class="contact-links">
+          <a href="mailto:sipaninavya17@gmail.com" class="contact-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+            sipaninavya17@gmail.com
+          </a>
+          <a href="tel:09435072918" class="contact-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 11.9a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.06 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/></svg>
+            09435072918
+          </a>
+          <a href="https://www.linkedin.com/in/navya-sipani-5203a120a" target="_blank" rel="noopener" class="contact-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            navya-sipani-5203a120a
+          </a>
+        </div>
+      </div>
+      <div class="contact-right">
+        <a href="https://www.linkedin.com/in/navya-sipani-5203a120a" target="_blank" rel="noopener" class="social-card">
+          <div class="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </div>
+          <div>
+            <div class="social-label">LinkedIn</div>
+            <div class="social-handle">navya-sipani-5203a120a</div>
+          </div>
+          <span class="social-arrow">→</span>
+        </a>
+        <a href="https://sipaninavya.itch.io/" target="_blank" rel="noopener" class="social-card">
+          <div class="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v18H3V3zm15 4H6v10h12V7z"/></svg>
+          </div>
+          <div>
+            <div class="social-label">itch.io</div>
+            <div class="social-handle">sipaninavya.itch.io</div>
+          </div>
+          <span class="social-arrow">→</span>
+        </a>
+        <a href="https://github.com/sipaninavya" target="_blank" rel="noopener" class="social-card">
+          <div class="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </div>
+          <div>
+            <div class="social-label">GitHub</div>
+            <div class="social-handle">sipaninavya</div>
+          </div>
+          <span class="social-arrow">→</span>
+        </a>
+        <a href="https://canva.link/yob2x6iej8l1h55" target="_blank" rel="noopener" class="social-card">
+          <div class="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div>
+            <div class="social-label">Resume / CV</div>
+            <div class="social-handle">View full resume →</div>
+          </div>
+          <span class="social-arrow">→</span>
+        </a>
+      </div>
+    </div>
+    <footer>
+    </footer>
+  </section>
+
+  <!-- ============================================================
+       PROJECT MODALS
+  ============================================================ -->
+  <div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
+    <div class="modal-box">
+      <div class="modal-header" id="modalHeader">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <div class="modal-header-placeholder" id="modalEmoji"></div>
+        <img id="modalImg" src="" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+      </div>
+      <div class="modal-body">
+        <div class="modal-tags" id="modalTags"></div>
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <p class="modal-meta" id="modalMeta"></p>
+        <div class="modal-desc" id="modalDesc"></div>
+        <a class="modal-play-btn" id="modalBtn" href="#" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 22V2l18 10L3 22z"/></svg>
+          <span id="modalBtnText">Play Now</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+  <script>
+    /* ---- NAV SCROLL ---- */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    /* ---- HAMBURGER ---- */
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+    });
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('open');
+    }
+
+    /* ---- REVEAL ON SCROLL ---- */
+    const revealEls = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    revealEls.forEach(el => io.observe(el));
+
+    /* ---- ANIMATED PUZZLE GRID ---- */
+    const grid = document.getElementById('puzzleGrid');
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const cells = [];
+    for (let i = 0; i < 42; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'puzzle-cell';
+      cell.textContent = letters[Math.floor(Math.random() * letters.length)];
+      grid.appendChild(cell);
+      cells.push(cell);
+    }
+    // animate cells
+    function animatePuzzle() {
+      cells.forEach(c => c.classList.remove('active', 'path'));
+      const pathLen = 6 + Math.floor(Math.random() * 4);
+      let idx = Math.floor(Math.random() * cells.length);
+      for (let i = 0; i < pathLen; i++) {
+        if (i === 0 || i === pathLen - 1) cells[Math.min(idx, cells.length-1)].classList.add('active');
+        else cells[Math.min(idx, cells.length-1)].classList.add('path');
+        cells[Math.min(idx, cells.length-1)].textContent = letters[Math.floor(Math.random() * letters.length)];
+        idx = (idx + 6 + Math.floor(Math.random() * 3) - 1 + cells.length) % cells.length;
+      }
+    }
+    animatePuzzle();
+    setInterval(animatePuzzle, 1800);
+
+    /* ---- PROJECT DATA ---- */
+    const projects = {
+      triangle: {
+        title: 'TRIANGLE',
+        emoji: '🔺',
+        img: 'https://img.itch.zone/aW1nLzE3ODgwMDc1LnBuZw==/original/ST8Czt.png',
+        meta: 'Solo project · Unity · Browser · Sept 2024 – On Hold',
+        tags: [['Solo', 'tag-solo'], ['Unity', 'tag-unity'], ['2D', 'tag-unity']],
+        link: 'https://sipaninavya.itch.io/the-triangle00',
+        btnText: 'Play on itch.io',
+        desc: `
+          <h4>What it is</h4>
+          <p>TRIANGLE is a 2D action/adventure game I built from scratch as a solo practice project — not from a course, not following a tutorial, just a blank Unity project and a design idea. The core concept: a triangle-shaped player navigating levels, shooting enemies, and progressing through a world I designed and built tile by tile.</p>
+          <h4>What I built</h4>
+          <p>I implemented a <strong>full leveling system</strong> with multiple player types and enemy types, each with different behaviors. The game uses <strong>Unity Tilemaps and a grid system</strong> — I designed the tile palettes, laid out each level by hand, and iterated on the layout based on how it felt to play. I added <strong>particle effects</strong> for player and enemy deaths, background music, and button sound effects. Then I designed a <strong>cutscene system with a dialogue sequence</strong> — my first time building one outside a guided course. I also created all the sprites in the game myself, including two distinct player designs and one enemy sprite.</p>
+          <h4>What I was trying to learn</h4>
+          <p>After the Udemy course, I wanted to see if I could make something genuinely my own — from the first line of code to the art. TRIANGLE was where I found out what I actually knew versus what I'd just watched. The hardest part was the tilemap layout: getting the grid to feel like a real level, not just random tiles placed correctly.</p>
+          <h4>Where it is now</h4>
+          <p>Currently on hold while I focus on Cipher Stones. The plan is to return to it and complete it properly — with a full storyline, more levels, polished cutscenes, and a proper game loop. It's the project I'm most curious to finish.</p>
+        `
+      },
+      galaxy: {
+        title: 'Galaxy Shooter',
+        emoji: '🚀',
+        img: 'https://img.itch.zone/aW1nLzE4MjI1Njc0LnBuZw==/original/0WHQSP.png',
+        meta: 'Solo project · Unity · Browser · Jan – Feb 2024',
+        tags: [['Solo', 'tag-solo'], ['Unity', 'tag-unity'], ['2D Shooter', 'tag-unity']],
+        link: 'https://sipaninavya.itch.io/galaxy-shooter',
+        btnText: 'Play on itch.io',
+        desc: `
+          <h4>What it is</h4>
+          <p>Galaxy Shooter is a 2D top-down space shooter — the first complete game I published on itch.io. It was built as part of the Udemy Unity course I completed, but I treated it as the real starting point: a project where I'd go from knowing nothing about Unity to having a playable, published game.</p>
+          <h4>Controls</h4>
+          <p><strong>WASD</strong> to move · <strong>Spacebar</strong> to shoot enemies.</p>
+          <h4>What I built and learned</h4>
+          <p>This is where I learned the foundational Unity stack: <strong>2D animation</strong>, <strong>sound effects and audio management</strong>, <strong>UI systems</strong>, and <strong>post-processing</strong> (bloom, vignette, color grading). More importantly, it's where I moved from basic C# syntax to actually understanding intermediate patterns — things like coroutines, object pooling concepts, and managing game state cleanly.</p>
+          <h4>What I'd do differently</h4>
+          <p>The enemy patterns are simple and the difficulty curve is flat. Looking back, I'd design a proper escalation — introduce one mechanic, let the player master it, then layer the next one. That instinct for pacing didn't exist yet when I made this; it's something I've been building ever since through the design documentation habit and studying how published games handle it.</p>
+          <h4>Why it's still on itch.io</h4>
+          <p>Because every portfolio entry should be honest. Galaxy Shooter is a learning project — it's not polished, it's not original — but it's the foundation that everything else built on. It also got submitted to Triple Jam, which was my first taste of releasing something to an actual audience.</p>
+        `
+      },
+      pregnant: {
+        title: 'Pregnant Warrior',
+        emoji: '🤰',
+        img: 'https://img.itch.zone/aW1nLzE4Mjk3Nzc2LnBuZw==/original/AsHKKT.png',
+        meta: 'The Stupid Jam 2024 · Co-op Action · Browser · Oct 2024 · 7th place / 61+ entries',
+        tags: [['Game Jam', 'tag-jam'], ['7th Place', 'tag-jam'], ['Co-op', 'tag-unity'], ['Unity', 'tag-unity']],
+        link: 'https://sipaninavya.itch.io/pregnant-warrior',
+        btnText: 'Play on itch.io',
+        desc: `
+          <h4>What it is</h4>
+          <p>Pregnant Warrior is a local co-op action game made in roughly 48 hours for "The Stupid Jam 2024" — a jam where the rules were simple: build something deliberately ridiculous. The concept I landed on: two pregnant warriors fighting side by side. Ridiculous on the surface, but I had to make the co-op feel functional in 48 hours.</p>
+          <h4>Why this jam mattered</h4>
+          <p>This was my <strong>first successfully submitted jam entry</strong> — and I submitted it the week after I missed the Ball Wants to Roll deadline by five minutes. The lesson from that failure was fresh: build faster, leave more buffer, prioritize a working core over polish. I applied that directly here. The result: submitted with time to spare and placed <strong>7th out of 61+ submissions</strong>.</p>
+          <h4>What I built under pressure</h4>
+          <p>Two-player co-op input handling, a shared action system, basic UI, sound effects, and enough content to make it feel like a complete (if absurd) game — all in a 48-hour window. The brief being ridiculous actually helped: it freed me from perfectionism. The game doesn't have to be profound. It just has to work and make people laugh.</p>
+          <h4>What I was a little embarrassed about — and posted anyway</h4>
+          <p>I was genuinely nervous to post this one. The concept is weird. But I posted it publicly on LinkedIn alongside the 62nd entry in my Friday progress series. 7th place was a much better answer than I expected — and it taught me that constraints (weird theme, tight deadline) often produce more interesting work than total freedom.</p>
+          <h4>What's next for it</h4>
+          <p>I'm expanding the jam prototype into a fuller game with redesigned mechanics and a proper progression system. The jam version was proof it worked — the real version will be worth playing for more than five minutes.</p>
+        `
+      },
+      ball: {
+        title: 'Ball Wants to Roll',
+        emoji: '⚽',
+        img: 'https://img.itch.zone/aW1nLzE4MTcxODA2LnBuZw==/original/E%2FOe9D.png',
+        meta: 'Jam Weekend #5 · "Make it roll" · 48h · Oct 2024 · Missed deadline by minutes',
+        tags: [['Game Jam', 'tag-jam'], ['3D', 'tag-unity'], ['Unity', 'tag-unity']],
+        link: 'https://sipaninavya.itch.io/ball-wants-to-roll',
+        btnText: 'View on itch.io',
+        desc: `
+          <h4>What it is</h4>
+          <p>Ball Wants to Roll is a 3D physics-based game built in 48 hours for Jam Weekend #5, themed "make it roll." The concept was simple — a ball that wants to roll through obstacles and reach a goal. I built the basic mechanics, some levels, and basic visuals entirely solo in the jam window.</p>
+          <h4>The honest story</h4>
+          <p>The submission deadline was 9:30 PM. I finished the game at 9:35 PM. I was five minutes late. I couldn't submit it to the jam — it's marked as "Canceled" on itch.io to this day. I could have taken it down. Instead, I uploaded it anyway and wrote about what happened in my Week 60 LinkedIn post with the headline: "I FAILED and LEARNED from it."</p>
+          <h4>What actually went wrong</h4>
+          <p>Procrastination. I thought I had enough time, and I didn't build in any buffer. With a few hours left, it became a panic moment — and panic doesn't make good games or accurate time estimates. The last few features I rushed in weren't even good. I'd have been better off finishing earlier with less content and more polish.</p>
+          <h4>What changed after this</h4>
+          <p>Everything about how I approach jams. The very next week I entered The Stupid Jam, used the deadline lesson directly, and placed 7th. I now plan jam work in reverse from the submission deadline and always leave at least 2 hours of buffer before submitting. This game is on the portfolio not despite the failure — but because of it. It's part of the actual story.</p>
+        `
+      },
+      housie: {
+        title: 'Housie Tambola Number Caller',
+        emoji: '🎱',
+        img: 'https://img.itch.zone/aW1nLzI3ODA1NDM3LnBuZw==/original/Wy%2Fip3.png',
+        meta: 'Personal project · Unity · Android APK · Jun 2025',
+        tags: [['Android', 'tag-android'], ['Utility App', 'tag-solo'], ['Unity', 'tag-unity']],
+        link: 'https://sipaninavya.itch.io/housie-tambola-number-caller',
+        btnText: 'Download APK on itch.io',
+        desc: `
+          <h4>What it is</h4>
+          <p>Housie Tambola Number Caller is a fully functional Android utility app built in Unity — not a game, but a tool. Housie/Tambola is an Indian variant of Bingo played at social gatherings and festivals. The app replaces the traditional token-drawing bag with a digital caller that manages the full 1–90 number set.</p>
+          <h4>What I built</h4>
+          <p>The app has two calling modes: <strong>random calling</strong> (automated draw from remaining numbers) and <strong>manual calling</strong> (tap any number directly). Both modes share state — whichever mode you use, the already-called numbers are tracked together. I built a <strong>full number history panel</strong> so players can quickly check which numbers have been called, and a <strong>color-coded UI</strong> that makes it visually clear which numbers are called, pending, or active at a glance.</p>
+          <h4>The technical challenge that taught me the most</h4>
+          <p>After publishing to itch.io, I discovered a Play Store–specific bug: Android Auto Backup was restoring old <strong>PlayerPrefs</strong> and save data after the app was reinstalled, making it look like numbers were pre-called. This required digging into <strong>AndroidManifest.xml</strong>, writing a <strong>backup_rules.xml</strong> exclusion config, and adding a defensive disk-check in the load logic so the app always starts from a clean state on a fresh install.</p>
+          <h4>Why I built it</h4>
+          <p>My family plays Tambola regularly and I wanted to build something genuinely useful for them — something that would get used in real life, not just sit in a portfolio. It's currently downloadable as an APK on itch.io. It also gave me hands-on experience with Android-specific Unity considerations I wouldn't have encountered building browser games.</p>
+        `
+      }
+    };
+
+    /* ---- MODAL FUNCTIONS ---- */
+    function openModal(id) {
+      const p = projects[id];
+      if (!p) return;
+      const overlay = document.getElementById('modal');
+      const img = document.getElementById('modalImg');
+      const emoji = document.getElementById('modalEmoji');
+
+      // tags
+      document.getElementById('modalTags').innerHTML = p.tags.map(([label, cls]) =>
+        `<span class="card-tag ${cls}">${label}</span>`).join('');
+      document.getElementById('modalTitle').textContent = p.title;
+      document.getElementById('modalMeta').textContent = p.meta;
+      document.getElementById('modalDesc').innerHTML = p.desc;
+      document.getElementById('modalBtn').href = p.link;
+      document.getElementById('modalBtnText').textContent = p.btnText;
+
+      // image
+      emoji.textContent = p.emoji;
+      emoji.style.display = 'flex';
+      img.style.display = 'none';
+      if (p.img) {
+        img.src = p.img;
+        img.alt = p.title;
+        img.onload = () => { img.style.display = 'block'; emoji.style.display = 'none'; };
+        img.onerror = () => { img.style.display = 'none'; emoji.style.display = 'flex'; };
+      }
+
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('modal')) closeModal();
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+</body>
+</html>
